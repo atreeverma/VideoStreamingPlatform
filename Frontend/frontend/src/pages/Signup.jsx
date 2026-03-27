@@ -36,7 +36,7 @@ function Signup() {
             }
             await registerUser(formData)
             console.log("Signup successfull");
-            navigate("/login")
+            navigate("/")
             
         } catch (error) {
             console.log("Signup failed",error);

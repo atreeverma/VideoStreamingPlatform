@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { login } from "./features/authSlice"
 import {getCurrentUser} from "./api/authApi"
 import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar";
 function App() {
   const dispatch = useDispatch();
 
@@ -19,6 +20,7 @@ function App() {
   },[dispatch])
   return (
     <>
+      <Navbar/>
       <Outlet/>
     </>  
   )

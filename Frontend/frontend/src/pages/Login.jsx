@@ -3,6 +3,7 @@ import {loginUser} from "../api/authApi"
 import {useDispatch} from "react-redux"
 import { login } from "../features/authSlice"
 import { useNavigate } from "react-router-dom"
+import Button from "../components/Button"
 function Login() {
     const [form,setForm] = useState({email: "",password: ""})
     const dispatch = useDispatch()
@@ -35,7 +36,7 @@ function Login() {
                 placeholder="Password"
                 onChange={(e) => setForm({...form,password: e.target.value})}
             />
-        <button type = "submit">Login</button>
+            <Button type="submit">Login</Button>
         </form>
     );
 }
