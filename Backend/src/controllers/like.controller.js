@@ -16,22 +16,26 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
         video: videoId,
         likedBy: req.user._id
     })
+    let liked;
 
     if(existingLike){
         await Like.findByIdAndDelete(existingLike._id)
-
+        liked = false;
+        const likeCount = await Like.countDocuments({ video: videoId });
         return res
                 .status(200)
-                .json(new ApiResponse(200,{},"Video Unliked"))
+                .json(new ApiResponse(200,{liked,likeCount},"Video Unliked"))
     }
 
     const like = await Like.create({
         video: videoId,
         likedBy: req.user._id
     })
+    liked = false;
+    const likeCount = await Like.countDocuments({ video: videoId });
     return res
             .status(200)
-            .json(new ApiResponse(200,like,"Video Liked"))
+            .json(new ApiResponse(200,{liked,likeCount},"Video Liked"))
     //TODO: toggle like on video
 })
 
