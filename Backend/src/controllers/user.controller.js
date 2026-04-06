@@ -295,8 +295,7 @@ const updateUserCoverImage = asyncHandler(async(req,res) => {
 })
 
 const getUserChannelProfile = asyncHandler(async(req,res) => {
-    const {username} = req.body
-
+    const {username} = req.params;
     if(!username?.trim()){
         throw new ApiError(400,"username is missing")
     }
@@ -333,7 +332,11 @@ const getUserChannelProfile = asyncHandler(async(req,res) => {
                 },
                 isSubscribed: {
                     $cond: {
-                        if: {$in: [req.user?._id,"$subscribers.subscriber"]},
+                        if: {$in: [req.user?._id || null,{ $map: {
+                        input: "$subscribers",
+                        as: "sub",
+                        in: "$$sub.subscriber"
+                    }}]},
                         then: true,
                         else: false
                     }
@@ -345,7 +348,7 @@ const getUserChannelProfile = asyncHandler(async(req,res) => {
                 fullName: 1,
                 username: 1,
                 subscribersCount: 1,
-                channelsSubscribedToCount: 1,
+                channelSubscribedToCount: 1,
                 isSubscribed: 1,
                 avatar: 1,
                 coverImage: 1,
@@ -363,7 +366,6 @@ const getUserChannelProfile = asyncHandler(async(req,res) => {
         new ApiResponse(200,channel[0],"User channel fetched Successfully")
     )
 })
-
 const getWatchHistory = asyncHandler(async(req,res) => {
     const user = await User.aggregate([
         {

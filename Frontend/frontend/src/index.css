@@ -135,3 +135,65 @@
   font-size: 14px;
   color: #555;
 }
+.channel-page {
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* COVER */
+.cover img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* PROFILE */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: -40px;
+  padding: 10px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid white;
+}
+
+/* VIDEOS */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.upload-page {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.upload-form input,
+.upload-form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.upload-form button {
+  padding: 10px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -1,4 +1,2 @@
 import api from "./axios";
-
-export const getChannelProfile = (username) =>
-  api.get(`/users/c/${username}`);
+export const getUserChannelProfile = (username) => api.get(`/users/c/${username}`);
