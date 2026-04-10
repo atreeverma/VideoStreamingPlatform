@@ -218,6 +218,7 @@ const changeCurrentPassword = asyncHandler(async(req,res) => {
 })
 
 const getCurrentUser = asyncHandler(async(req,res) => {
+    
     return res
     .status(200)
     .json(new ApiResponse(200,req.user,"current user fetched successfully"))
@@ -295,7 +296,10 @@ const updateUserCoverImage = asyncHandler(async(req,res) => {
 })
 
 const getUserChannelProfile = asyncHandler(async(req,res) => {
+
+    console.log("🔥 CHANNEL API HIT");
     const {username} = req.params;
+    console.log("🔥 CHANNEL API HIT");
     if(!username?.trim()){
         throw new ApiError(400,"username is missing")
     }
@@ -332,11 +336,20 @@ const getUserChannelProfile = asyncHandler(async(req,res) => {
                 },
                 isSubscribed: {
                     $cond: {
-                        if: {$in: [req.user?._id || null,{ $map: {
-                        input: "$subscribers",
-                        as: "sub",
-                        in: "$$sub.subscriber"
-                    }}]},
+                        if: {
+                            $in: [
+                                req.user
+                                    ? new mongoose.Types.ObjectId(req.user._id)  // ✅ cast to ObjectId
+                                    : null,                                        // ✅ safe fallback
+                                {
+                                    $map: {
+                                        input: "$subscribers",
+                                        as: "sub",
+                                        in: "$$sub.subscriber"
+                                    }
+                                }
+                            ]
+                        },
                         then: true,
                         else: false
                     }

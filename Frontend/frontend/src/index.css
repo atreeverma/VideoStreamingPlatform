@@ -1,4 +1,51 @@
 @import "tailwindcss";
+.login-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f9f9f9;
+}
+
+.login-form {
+  width: 320px;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-form h2 {
+  text-align: center;
+}
+
+.login-form input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.login-form button {
+  padding: 10px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background: darkred;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+}
 /* PAGE */
 .video-page {
   max-width: 900px;
@@ -135,41 +182,6 @@
   font-size: 14px;
   color: #555;
 }
-.channel-page {
-  max-width: 1000px;
-  margin: auto;
-}
-
-/* COVER */
-.cover img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-/* PROFILE */
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-top: -40px;
-  padding: 10px;
-}
-
-.avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 3px solid white;
-}
-
-/* VIDEOS */
-.video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  margin-top: 20px;
-}
 .upload-page {
   max-width: 600px;
   margin: auto;
@@ -196,4 +208,70 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+.channel-page {
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* COVER */
+.cover img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* PROFILE */
+.profile {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: -40px;
+  padding: 10px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid white;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* SUBSCRIBE */
+.subscribe-section {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subscribe-btn {
+  padding: 8px 16px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.subscribe-btn.active {
+  background: #ccc;
+  color: black;
+}
+
+.subscribe-btn:hover {
+  background: darkred;
+}
+
+/* VIDEOS */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
 }
