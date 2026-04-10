@@ -115,7 +115,8 @@ const loginUser=asyncHandler(async(req,res,next)=>{
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
     const options = {
         httpOnly: true,//cookies only modified by server not by frontend
-        secure: true
+        secure: true,
+        sameSite: "None"
     }
     return res.status(200).cookie("accessToken",accessToken,options).cookie("refreshToken",refreshToken,options)
     .json(
