@@ -7,22 +7,34 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "start": "node src/index.js",
+    "test": "vitest run",
+    "worker:view-count": "node src/workers/viewCount.worker.js",
+    "worker:video-processing": "node src/workers/videoProcessing.worker.js"
   },
   "devDependencies": {
     "nodemon": "^3.1.11",
-    "prettier": "^3.7.4"
+    "prettier": "^3.7.4",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.9"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "bullmq": "^5.79.1",
     "cloudinary": "^2.9.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
+    "ioredis": "^5.11.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.2",
     "mongoose-aggregate-paginate-v2": "^1.1.4",
-    "multer": "^2.0.2"
+    "morgan": "^1.11.0",
+    "multer": "^2.0.2",
+    "zod": "^4.4.3"
   }
 }

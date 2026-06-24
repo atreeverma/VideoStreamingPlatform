@@ -31,7 +31,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
         video: videoId,
         likedBy: req.user._id
     })
-    liked = false;
+    liked = true;
     const likeCount = await Like.countDocuments({ video: videoId });
     return res
             .status(200)

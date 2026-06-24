@@ -5,6 +5,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
+import { cookieOptions } from "../utils/cookieOptions.js";
 const generateAccessAndRefreshTokens = async (userId) =>{
     try{
         const user = await User.findById(userId)
@@ -103,9 +104,6 @@ const loginUser=asyncHandler(async(req,res,next)=>{
         throw new ApiError(404,"user does not exist")
     }
 
-    console.log("Entered password:", password);
-    console.log("Stored password:", user.password);
-
     const isPasswordValid = await user.isPasswordCorrect(password)    
      if(!isPasswordValid){
         throw new ApiError(401,"Invalid user Credentials")
@@ -113,11 +111,7 @@ const loginUser=asyncHandler(async(req,res,next)=>{
 
     const {accessToken,refreshToken} = await generateAccessAndRefreshTokens(user._id)
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
-    const options = {
-        httpOnly: true,//cookies only modified by server not by frontend
-        secure: true,
-        sameSite: "None"
-    }
+    const options = cookieOptions;
     return res.status(200).cookie("accessToken",accessToken,options).cookie("refreshToken",refreshToken,options)
     .json(
         new ApiResponse(
@@ -140,10 +134,7 @@ const  logoutUser = asyncHandler(async(req,res)=>{
             new: true
         }
     )
-    const options = {
-        httpOnly: true,//cookies only modified by server not by frontend
-        secure: true
-    }
+    const options = cookieOptions;
     return res
     .status(200)
     .clearCookie("accessToken",options)
@@ -176,20 +167,17 @@ const refreshAccessToken = asyncHandler(async (req,res)=> {
             throw new ApiError(401,"Refresh token is expired or used")
         }
     
-        const options = {
-            httpOnly: true,
-            secure: true
-        }
-        const {accessToken, newrefreshToken} = await generateAccessAndRefreshTokens(user._id)
+        const options = cookieOptions;
+        const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
     
         return res
         .status(200)
         .cookie("accessToken",accessToken,options)
-        .cookie("refreshToken",newrefreshToken,options)
+        .cookie("refreshToken",refreshToken,options)
         .json(
             new ApiResponse(
                 200,
-                {accessToken,refreshToken: newrefreshToken},
+                {accessToken,refreshToken},
                 "Access token refreshed"
             )
         )

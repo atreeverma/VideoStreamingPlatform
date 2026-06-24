@@ -9,7 +9,7 @@ import {
 } from "../controllers/video.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 import {upload} from "../middlewares/multer.middleware.js"
-
+import { uploadLimiter } from "../middlewares/rateLimit.middleware.js";
 const router = Router();
 router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
@@ -17,6 +17,7 @@ router
     .route("/")
     .get(getAllVideos)
     .post(
+        uploadLimiter,
         upload.fields([
             {
                 name: "videoFile",

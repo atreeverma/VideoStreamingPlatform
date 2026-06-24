@@ -5,12 +5,26 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
-
+import { incrementVideoView } from "../services/viewCount.service.js"
+import { videoQueue } from "../queues/video.queue.js"
 
 const getAllVideos = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query, sortBy = "createdAt", sortType = "desc", userId } = req.query
+    const {
+        page = 1,
+        limit = 10,
+        query,
+        sortBy = "createdAt",
+        sortType = "desc",
+        userId
+    } = req.query
+    
+    const pageNumber = Math.max(parseInt(page, 10), 1)
+    const limitNumber = Math.min(Math.max(parseInt(limit, 10), 1), 50)
+    const allowedSortFields = ["createdAt", "views", "duration", "title"]
+    const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "createdAt"
     //TODO: get all videos based on query, sort, pagination
-    const matchStage = {}
+    const matchStage = {isPublished: true,
+        status: "published",}
     if(query){
         matchStage.title = { 
             $regex: query,
@@ -27,19 +41,27 @@ const getAllVideos = asyncHandler(async (req, res) => {
         },
         {
             $sort: {
-                [sortBy]: sortOrder
+                [safeSortBy]: sortOrder
             }
         },
         {
-            $skip: (page - 1) * limit
+            $skip: (pageNumber - 1) * limitNumber
         },
         {
-            $limit: parseInt(limit)
+            $limit: limitNumber
         }
     ])
+    const totalVideos = await Video.countDocuments(matchStage)
+
+    const pagination = {
+        page: pageNumber,
+        limit: limitNumber,
+        totalVideos,
+        totalPages: Math.ceil(totalVideos / limitNumber),
+    }
     return res
             .status(200)
-            .json(new ApiResponse(200,videos,"Videos fetched Successfully"))
+            .json(new ApiResponse(200, { videos, pagination }, "Videos fetched Successfully"))
 
 })
 
@@ -69,11 +91,16 @@ const publishAVideo = asyncHandler(async (req, res) => {
         videoFile: videoFile.url,
         thumbnail: thumbnail.url,
         duration: videoFile.duration || 0,
+        status: "processing",
+        isPublished: false,
         owner: req.user._id
+    })
+    await videoQueue.add("video-processing", {
+        videoId: video._id.toString(),
     })
     return res 
             .status(201)
-            .json(new ApiResponse(201,video,"Video published successfully"))
+            .json(new ApiResponse(201,video,"Video uploaded and queued for processing"))
     // TODO: get video, upload to cloudinary, create video
 })
 
@@ -82,14 +109,19 @@ const getVideoById = asyncHandler(async (req, res) => {
     if(!isValidObjectId(videoId)){
         throw new ApiError(400,"Invalid video id")
     }
-    const video = await Video.findById(videoId)
+    const video = await Video.findOne({
+        _id: videoId,
+        isPublished: true,
+        $or: [
+            { status: "published" },
+            { status: { $exists: false } }
+        ]
+    })
 
     if(!video){
         throw new ApiError(404,"Video not found")
     }
-    video.views += 1;
-    await video.save()
-
+    await incrementVideoView(videoId);
     return res
             .status(200)
             .json(new ApiResponse(200,video,"Video fetched Successfully"))

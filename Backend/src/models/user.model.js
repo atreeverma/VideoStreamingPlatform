@@ -47,8 +47,8 @@ const userSchema=new Schema(
         },
     },
     {timestamps : true}
-)
-
+)   
+userSchema.index({ username: 1, email: 1 })
 userSchema.pre("save",async function (next){// hashing password before saving
     if(!this.isModified("password")) return next
 

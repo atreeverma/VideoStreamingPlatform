@@ -7,7 +7,7 @@ function Home() {
         const fetchVideos = async () => {
             try{
                 const res = await getAllVideos();
-                setVideos(res.data.data)
+                setVideos(res.data.data.videos)
             } catch (error) {
                 console.log("Error fetching videos", error);
             }

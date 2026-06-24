@@ -1,0 +1,52 @@
+services:
+  backend:
+    build:
+      context: ./Backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./Backend/.env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend/frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  view-worker:
+    build:
+      context: ./Backend
+    command: npm run worker:view-count
+    env_file:
+      - ./Backend/.env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - backend
+    restart: unless-stopped
+  video-worker:
+    build:
+      context: ./Backend
+    command: npm run worker:video-processing
+    env_file:
+      - ./Backend/.env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - backend
+    restart: unless-stopped
+    
+   
